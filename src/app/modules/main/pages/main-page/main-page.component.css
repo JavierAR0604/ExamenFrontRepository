@@ -1,0 +1,44 @@
+.welcome-container {
+  display: grid;
+  grid-template-areas:
+    "sidebar top-bar"
+    "sidebar main-content"
+    "sidebar footer";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 60px 1fr 30px;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.main-content {
+  grid-area: main-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  text-align: center;
+}
+
+.welcome-content {
+  max-width: 600px;
+  padding: 20px;
+}
+
+.welcome-logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #333;
+}
+
+p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.6;
+}
+

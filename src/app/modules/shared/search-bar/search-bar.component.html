@@ -1,0 +1,26 @@
+<!-- Opción 3: Versión personalizada sin Angular Material -->
+  <div class="custom-search-bar">
+    <button class="custom-add-button" (click)="onAdd()">
+      <span class="add-icon">+</span>
+      Nuevo
+    </button>
+    
+    <div class="custom-search-wrapper">
+      <input 
+        type="text" 
+        class="custom-search-input"
+        [(ngModel)]="searchText"
+        (keyup)="applyFilter()"
+        (keypress)="onKeyPress($event)"
+        placeholder="Buscar empleados...">
+      
+      <div class="search-actions">
+        <button *ngIf="searchText" class="clear-button" (click)="clearSearch()">
+          ✕
+        </button>
+        <button class="search-button" (click)="onSearch()">
+          🔍
+        </button>
+      </div>
+    </div>
+  </div>
