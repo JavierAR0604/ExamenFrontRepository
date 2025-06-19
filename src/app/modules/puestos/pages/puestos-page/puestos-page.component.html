@@ -5,31 +5,37 @@
   <div class="empleados-content">
     <div class="tabla-empleados">
       <h1 class="titulo">PUESTOS</h1>
-      <app-search-bar></app-search-bar>
+      <app-search-bar 
+        placeholder="Buscar por ID o nombre del puesto..."
+        addButtonText="Nuevo Puesto"
+        (searchChange)="onSearchChange($event)"
+        (addClick)="onAddClick()"
+        (clearSearch)="onClearSearch()">
+      </app-search-bar>
+
+      <div class="tabla-contenedor-reducido">
 
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 tabla-mat">
 
-        <ng-container matColumnDef="no">
-          <th mat-header-cell *matHeaderCellDef>No.</th>
-          <td mat-cell *matCellDef="let puestos; let i = index">{{ i + 1 }}</td>
+        <ng-container matColumnDef="idPuesto">
+          <th mat-header-cell *matHeaderCellDef class="align-left">Id</th>
+          <td mat-cell *matCellDef="let puesto" class="align-left">{{ puesto.idPuesto }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="puesto">
-          <th mat-header-cell *matHeaderCellDef>Puesto</th>
-          <td mat-cell *matCellDef="let puestos">{{ puestos.puesto }}</td>
-        </ng-container>
-
-
-        <ng-container matColumnDef="descripcion">
-          <th mat-header-cell *matHeaderCellDef>Descripcion</th>
-          <td mat-cell *matCellDef="let puestos">{{ puestos.Descripcion}}</td>
+        <ng-container matColumnDef="nombrePuesto">
+          <th mat-header-cell *matHeaderCellDef class="align-center">Puesto</th>
+          <td mat-cell *matCellDef="let puesto" class="align-center">{{ puesto.nombrePuesto }}</td>
         </ng-container>
 
         <ng-container matColumnDef="acciones">
-          <th mat-header-cell *matHeaderCellDef>Acciones</th>
-          <td mat-cell *matCellDef="let puestos">
-            <button class="icono editar" (click)="editarEmpleado(puestos)">✏️</button>
-            <button class="icono eliminar" (click)="eliminarEmpleado(puestos)">🗑️</button>
+          <th mat-header-cell *matHeaderCellDef class="align-right">Acciones</th>
+          <td mat-cell *matCellDef="let puesto" class="align-right">
+            <button class="icono editar" (click)="editarPuesto(puesto)" matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="icono eliminar" (click)="eliminarPuesto(puesto)" matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </ng-container>
 
@@ -40,6 +46,8 @@
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
+
+</div>
 
   <app-footer></app-footer>
 </div>

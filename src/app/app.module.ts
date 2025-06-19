@@ -6,7 +6,8 @@ import { AppComponent } from './app.component';
 import { LoginPageComponent } from './modules/login/pages/login-page/login-page.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './app.interceptor';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { HttpClientModule } from '@angular/common/http';
     MatPaginatorModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

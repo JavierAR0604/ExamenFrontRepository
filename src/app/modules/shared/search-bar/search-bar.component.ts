@@ -1,4 +1,3 @@
-
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,40 +7,48 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-search-bar',
-  imports: [MatTableModule, MatFormFieldModule, MatInputModule, MatIconModule, FormsModule, MatPaginatorModule,CommonModule],
+  standalone: true,
+  imports: [MatTableModule, MatFormFieldModule, MatInputModule, MatIconModule, FormsModule, MatPaginatorModule, CommonModule],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.css',
 })
 export class SearchBarComponent { 
-  searchText = ""
+  @Input() placeholder: string = "Buscar...";
+  @Input() showAddButton: boolean = true;
+  @Input() addButtonText: string = "Nuevo";
+  
+  @Output() searchChange = new EventEmitter<string>();
+  @Output() addClick = new EventEmitter<void>();
+  @Output() clearSearch = new EventEmitter<void>();
+
+  searchText = "";
 
   constructor() {}
 
   onSearch(): void {
-    console.log("Buscando:", this.searchText)
-    // Aquí puedes agregar tu lógica de búsqueda
+    this.searchChange.emit(this.searchText);
   }
 
   onAdd(): void {
-    console.log("Agregando nuevo elemento")
-    // Aquí puedes agregar tu lógica para agregar elementos
+    this.addClick.emit();
   }
 
-  clearSearch(): void {
-    this.searchText = ""
+  onClearSearch(): void {
+    this.searchText = "";
+    this.clearSearch.emit();
+    this.searchChange.emit("");
   }
 
   onKeyPress(event: KeyboardEvent): void {
     if (event.key === "Enter") {
-      this.onSearch()
+      this.onSearch();
     }
   }
 
   applyFilter(): void {
-    // Filtrar en tiempo real mientras escribes
-    console.log("Filtrando:", this.searchText)
+    // Emitir el cambio en tiempo real mientras escribes
+    this.searchChange.emit(this.searchText);
   }
 }

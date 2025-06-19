@@ -4,6 +4,7 @@ import { LoginPageComponent } from './modules/login/pages/login-page/login-page.
 import { MainPageComponent } from './modules/main/pages/main-page/main-page.component';
 import { EmpleadosPageComponent } from './modules/empleados/pages/empleados-page/empleados-page.component';
 import { PuestosPageComponent } from './modules/puestos/pages/puestos-page/puestos-page.component';
+import { TareasPageComponent } from './modules/tareas/pages/tareas-page/tareas-page.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,10 @@ const routes: Routes = [
     path: 'puestos',
     component: PuestosPageComponent,
   },
-
+  {
+    path: 'tareas',
+    component: TareasPageComponent,
+  }
   
 ];
 

@@ -89,6 +89,7 @@
   background-color: white !important;
   color: #333; /* color del texto, puedes cambiarlo */
   border-bottom: 2px solid #e0e0e0;
+  
 }
 
 .tabla-empleados th {
@@ -96,5 +97,35 @@
   color: #333; /* color texto */
   font-weight: 600;
   border-bottom: 2px solid #e0e0e0;
+}
+
+/* Alineaciones personalizadas para columnas */
+.align-left {
+  text-align: left !important;
+}
+
+.align-center {
+  text-align: center !important;
+}
+
+.align-right {
+  text-align: right !important;
+}
+
+::ng-deep .tabla-contenedor-reducido {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+::ng-deep .tabla-contenedor-reducido .mat-header-cell,
+::ng-deep .tabla-contenedor-reducido .mat-cell {
+  padding: 8px 12px !important;
+  font-size: 0.85rem;
+}
+
+::ng-deep .tabla-contenedor-reducido .mat-table {
+  width: 100%;
+  display: table;
+  table-layout: auto;
 }
 
