@@ -15,8 +15,8 @@
       <div class="form-group">
         <input 
           type="email" 
-          formControlName="email" 
-          placeholder="example@email.com"
+          formControlName="usuario" 
+          placeholder="usuario"
           class="clean-input">
       </div>
 
@@ -24,7 +24,7 @@
       <div class="form-group">
         <input 
           type="password" 
-          formControlName="password" 
+          formControlName="contrasena" 
           placeholder="••••••••"
           class="clean-input">
       </div>
@@ -42,5 +42,9 @@
         <a href="#">Política de privacidad</a>
       </div>
     </form>
+
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
   </div>
 </div>
