@@ -1,3 +1,10 @@
+<div class="welcome-container">
+  <app-sidebar></app-sidebar>
+  <app-topbar></app-topbar>
+
+  <div class="tareas-content">
+      <h1 class="titulo">TAREAS</h1>
+
 
 <dx-gantt [taskListWidth]="500" scaleType="weeks" height="700">
   <dxo-tasks [dataSource]="tasks"></dxo-tasks>
@@ -34,3 +41,9 @@
 </dx-gantt>
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx.material.blue.light.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx-gantt.css" />
+
+</div>
+
+  <app-footer></app-footer>
+
+</div>
