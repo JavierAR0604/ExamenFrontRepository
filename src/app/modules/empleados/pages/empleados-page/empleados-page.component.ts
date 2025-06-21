@@ -13,6 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { EmpleadoFormComponent } from '../../components/empleado-form/empleado-form.component';
 
 @Component({
   selector: 'app-empleados-page',
@@ -29,7 +31,8 @@ import { SearchBarComponent } from "../../../shared/search-bar/search-bar.compon
     TopbarComponent,
     FooterComponent,
     CommonModule,
-    SearchBarComponent
+    SearchBarComponent,
+    MatDialogModule
   ],
   templateUrl: './empleados-page.component.html',
   styleUrl: './empleados-page.component.css',
@@ -41,7 +44,7 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private empleadosService: EmpleadosService) {}
+  constructor(private empleadosService: EmpleadosService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.cargarEmpleados();
@@ -125,8 +128,14 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
   }
 
   onAddClick() {
-    console.log('Agregar nuevo empleado');
-    // Aquí irá la lógica para abrir el modal/formulario de nuevo empleado
+    const dialogRef = this.dialog.open(EmpleadoFormComponent, {
+      data: null
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'guardado') {
+        this.cargarEmpleados();
+      }
+    });
   }
 
   onClearSearch() {
@@ -134,8 +143,14 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
   }
 
   editarEmpleado(empleado: Empleado) {
-    console.log('Editar empleado:', empleado);
-    // Aquí irá la lógica para editar empleado
+    const dialogRef = this.dialog.open(EmpleadoFormComponent, {
+      data: { empleado }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'guardado') {
+        this.cargarEmpleados();
+      }
+    });
   }
 
   eliminarEmpleado(empleado: Empleado) {

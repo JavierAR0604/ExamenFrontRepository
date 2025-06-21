@@ -1,0 +1,74 @@
+<div class="form-wrapper">
+    <div class="form-header">
+      <h2>{{ isEdit ? 'Editar Empleado' : 'Nuevo Empleado' }}</h2>
+    </div>
+  
+    <form [formGroup]="empleadoForm" (ngSubmit)="guardar()" class="form-container">
+      
+      <!-- Nombre (fila única) -->
+      <div class="form-row-center">
+        <mat-form-field appearance="fill" class="form-field full-width">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" required />
+        </mat-form-field>
+      </div>
+  
+      <!-- Apellido paterno y materno -->
+      <div class="form-row">
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Apellido Paterno</mat-label>
+          <input matInput formControlName="apellidoPaterno" required />
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Apellido Materno</mat-label>
+          <input matInput formControlName="apellidoMaterno" />
+        </mat-form-field>
+      </div>
+  
+      <!-- Fila para Código de Empleado (solo en modo edición) -->
+      <div class="form-row-center" *ngIf="isEdit">
+        <mat-form-field appearance="fill" class="form-field full-width">
+          <mat-label>Código Empleado</mat-label>
+          <input matInput formControlName="codigoEmpleado" [disabled]="true" />
+        </mat-form-field>
+      </div>
+  
+      <!-- Fecha nacimiento y contrato -->
+      <div class="form-row">
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Fecha de Nacimiento</mat-label>
+          <input matInput [matDatepicker]="picker1" formControlName="fechaNacimiento" required />
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="form-field">
+          <mat-label>Fecha de Inicio de Contrato</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="fechaInicioContrato" required />
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+  
+      <!-- Puesto (fila única) -->
+      <div class="form-row-center">
+        <mat-form-field appearance="fill" class="form-field full-width">
+          <mat-label>Puesto</mat-label>
+          <mat-select formControlName="idPuesto" required>
+            <mat-option *ngFor="let puesto of puestos" [value]="puesto.idPuesto">
+              {{ puesto.nombrePuesto }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+  
+      <!-- Botones -->
+      <div class="button-row">
+        <button mat-stroked-button type="button" color="warn" (click)="cancelar()">Cancelar</button>
+        <button mat-flat-button class="btn-guardar" type="submit" [disabled]="empleadoForm.invalid">
+          {{ isEdit ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>

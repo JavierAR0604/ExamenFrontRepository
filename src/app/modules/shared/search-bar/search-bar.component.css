@@ -31,7 +31,7 @@
 }
 
 .custom-add-button {
-  background: linear-gradient(135deg, #4caf50, #45a049);
+  background: linear-gradient(135deg, #90c33f, #90c33f);
   color: white;
   border: none;
   padding: 1rem 1.5rem;
@@ -46,7 +46,7 @@
 }
 
 .custom-add-button:hover {
-  background: linear-gradient(135deg, #45a049, #3d8b40);
+  background: linear-gradient(135deg, #90c33f, #90c33f);
 }
 
 .add-icon {
