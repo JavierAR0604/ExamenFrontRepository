@@ -1,0 +1,72 @@
+<div class="form-wrapper">
+  <div class="form-header">
+    <h2>{{ data.id ? 'Editar Tarea' : 'Nueva Tarea' }}</h2>
+  </div>
+  <form [formGroup]="tareaForm" (ngSubmit)="guardar()" class="form-container">
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Nombre de la tarea</mat-label>
+        <input matInput formControlName="nombreTarea" required>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Fecha de inicio</mat-label>
+        <input matInput [matDatepicker]="pickerInicio" formControlName="fechaInicio" required>
+        <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+        <mat-datepicker #pickerInicio></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Fecha de fin</mat-label>
+        <input matInput [matDatepicker]="pickerFin" formControlName="fechaFin" required>
+        <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFin></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Recurso</mat-label>
+        <mat-select formControlName="idRecurso" required>
+          <mat-option *ngFor="let recurso of data.resources" [value]="recurso.id">
+            {{ recurso.text }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Progreso (%)</mat-label>
+        <input matInput type="number" formControlName="progreso">
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Tarea Padre</mat-label>
+        <mat-select formControlName="idPadre">
+          <mat-option [value]="null">Sin padre</mat-option>
+          <mat-option *ngFor="let tarea of data.tareas" [value]="tarea.id">
+            {{ tarea.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Predecesora</mat-label>
+        <mat-select formControlName="predecesora">
+          <mat-option [value]="null">Sin predecesora</mat-option>
+          <mat-option *ngFor="let tarea of data.tareas" [value]="tarea.id">
+            {{ tarea.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="fill" class="form-field">
+        <mat-label>Estado</mat-label>
+        <input matInput [value]="estadoVisual" readonly disabled>
+      </mat-form-field>
+    </div>
+    <div class="button-row">
+      <button mat-stroked-button type="button" color="warn" (click)="cancelar()">Cancelar</button>
+      <button *ngIf="data.id" mat-flat-button color="warn" type="button" (click)="eliminar()">Eliminar</button>
+      <button mat-flat-button class="btn-guardar" type="submit" [disabled]="!tareaForm.valid">Guardar</button>
+    </div>
+  </form>
+</div> 

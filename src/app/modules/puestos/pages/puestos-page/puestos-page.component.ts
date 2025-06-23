@@ -13,6 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PuestoFormComponent } from '../../components/puesto-form/puesto-form.component';
 
 @Component({
   selector: 'app-puestos-page',
@@ -29,7 +31,8 @@ import { SearchBarComponent } from "../../../shared/search-bar/search-bar.compon
     TopbarComponent,
     FooterComponent,
     CommonModule,
-    SearchBarComponent
+    SearchBarComponent,
+    MatDialogModule
   ],
   templateUrl: './puestos-page.component.html',
   styleUrl: './puestos-page.component.css',
@@ -41,7 +44,7 @@ export class PuestosPageComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private puestosService: PuestosService) {}
+  constructor(private puestosService: PuestosService, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.cargarPuestos();
@@ -91,8 +94,14 @@ export class PuestosPageComponent implements OnInit, AfterViewInit {
   }
 
   onAddClick() {
-    console.log('Agregar nuevo puesto');
-    // Aquí irá la lógica para abrir el modal/formulario de nuevo puesto
+    const dialogRef = this.dialog.open(PuestoFormComponent, {
+      data: null
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'guardado') {
+        this.cargarPuestos();
+      }
+    });
   }
 
   onClearSearch() {
@@ -100,8 +109,14 @@ export class PuestosPageComponent implements OnInit, AfterViewInit {
   }
 
   editarPuesto(puesto: Puesto) {
-    console.log('Editar puesto:', puesto);
-    // Aquí irá la lógica para editar puesto
+    const dialogRef = this.dialog.open(PuestoFormComponent, {
+      data: { puesto }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'guardado') {
+        this.cargarPuestos();
+      }
+    });
   }
 
   eliminarPuesto(puesto: Puesto) {

@@ -12,7 +12,7 @@ export interface TareaDTO {
   idRecurso?: number;
   recursoNombre?: string;
   idPadre?: number;
-  predecesora?: string;
+  predecesora?: number;
   estado?: string;
   progreso?: number;
 }
@@ -21,11 +21,23 @@ export interface TareaDTO {
   providedIn: 'root'
 })
 export class TareasService {
-  private apiUrl = 'http://localhost:5234/api/Tareas/ObtenerTareas';
+  private baseUrl = 'http://localhost:5234/api/Tareas';
 
   constructor(private http: HttpClient) { }
 
   getTareas(): Observable<TareaDTO[]> {
-    return this.http.post<TareaDTO[]>(this.apiUrl, {});
+    return this.http.post<TareaDTO[]>(`${this.baseUrl}/ObtenerTareas`, {});
+  }
+
+  crearTarea(tarea: Partial<TareaDTO>): Observable<TareaDTO> {
+    return this.http.post<TareaDTO>(`${this.baseUrl}/CrearTarea`, tarea);
+  }
+
+  actualizarTarea(id: number, tarea: Partial<TareaDTO>): Observable<any> {
+    return this.http.post(`${this.baseUrl}/ActualizarTarea/${id}`, tarea);
+  }
+
+  eliminarTarea(id: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/eliminar/${id}`, {});
   }
 } 

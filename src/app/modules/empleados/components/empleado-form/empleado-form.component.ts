@@ -67,7 +67,7 @@ export class EmpleadoFormComponent implements OnInit {
 
   guardar() {
     if (this.empleadoForm.invalid) return;
-    const empleado: Empleado = this.empleadoForm.value;
+    const empleado: Empleado = this.empleadoForm.getRawValue();
 
     if (this.isEdit && this.data?.empleado) {
       this.empleadosService.actualizarEmpleado(this.data.empleado.idEmpleado, empleado).subscribe(() => {

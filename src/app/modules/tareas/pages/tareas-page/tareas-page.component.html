@@ -4,7 +4,12 @@
 
   <div class="tareas-content">
       <h1 class="titulo">TAREAS</h1>
-<dx-gantt [taskListWidth]="500" scaleType="weeks" height="700">
+      <app-search-bar (addClick)="onAddTarea()"></app-search-bar>
+<dx-gantt [taskListWidth]="500" scaleType="weeks" height="700"
+  (onTaskInserting)="onTaskInserting($event)"
+  (onTaskUpdating)="onTaskUpdating($event)"
+  (onTaskDeleting)="onTaskDeleting($event)"
+  (onTaskClick)="onTaskClick($event)">
     <dxo-tasks [dataSource]="tasks"></dxo-tasks>
     <dxo-dependencies [dataSource]="dependencies"></dxo-dependencies>
     <dxo-resources [dataSource]="resources"></dxo-resources>
@@ -35,11 +40,12 @@
     </dxo-toolbar>
   
     <dxo-validation [autoUpdateParentTasks]="true"></dxo-validation>
-    <dxo-editing [enabled]="true"></dxo-editing>
+    <dxo-editing [enabled]="false"></dxo-editing>
   </dx-gantt>
       <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx.material.blue.light.css" />
       <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx-gantt.css" />   
 
-    <app-footer></app-footer>
   
   </div>
+
+  <app-footer></app-footer>
