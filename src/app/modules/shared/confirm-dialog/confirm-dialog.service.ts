@@ -101,4 +101,17 @@ export class ConfirmDialogService {
       type: 'warning'
     });
   }
+
+  /**
+   * Muestra un mensaje de error para login
+   */
+  showErrorLogin(mensaje: string): Observable<boolean> {
+    return this.confirm({
+      title: 'Error de inicio de sesión',
+      message: mensaje,
+      confirmText: 'Entendido',
+      cancelText: '',
+      type: 'warning'
+    });
+  }
 } 

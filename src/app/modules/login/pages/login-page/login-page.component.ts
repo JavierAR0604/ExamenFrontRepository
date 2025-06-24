@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { LoginDTO } from '../../interfaces/login-dto';
 import { Router } from '@angular/router';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-login-page',
@@ -13,9 +14,13 @@ import { Router } from '@angular/router';
 export class LoginPageComponent implements OnInit {
   // Solución 2: Uso del operador de aserción definitiva
   loginForm!: FormGroup;
-  errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
   ngOnInit(): void {
     console.log('LoginPageComponent cargado');
@@ -39,11 +44,12 @@ export class LoginPageComponent implements OnInit {
         },
         error: (error) => {
           console.log('Formulario inválido', this.loginForm.value, this.loginForm.errors);
-          this.errorMessage = 'Credenciales incorrectas o error de servidor';
+          this.confirmDialogService.showErrorLogin('Credenciales incorrectas o formulario inválido').subscribe();
         }
       });
     } else {
       console.log('Formulario inválido', this.loginForm.value, this.loginForm.errors);
+      this.confirmDialogService.showErrorLogin('Por favor, completa correctamente todos los campos requeridos.').subscribe();
     }
   }
 }

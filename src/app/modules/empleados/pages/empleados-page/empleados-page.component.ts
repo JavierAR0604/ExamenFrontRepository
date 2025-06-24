@@ -167,7 +167,22 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
             this.cargarEmpleados(); // Recargar la lista después de eliminar
           },
           error: (err) => {
-            console.error('Error al eliminar empleado', err);
+            // Manejar error específico de eliminación
+            if (err.status === 400) {
+              let errorMessage = '';
+              if (typeof err.error === 'string') {
+                errorMessage = err.error;
+              } else if (err.error && typeof err.error === 'object') {
+                errorMessage = err.error.message || err.error.error || JSON.stringify(err.error);
+              } else {
+                errorMessage = 'No se puede eliminar el empleado';
+              }
+              this.confirmDialogService.showErrorEliminacion('empleado', nombreCompleto, errorMessage).subscribe();
+            } else {
+              // Error genérico
+              console.error('Error al eliminar empleado', err);
+              this.confirmDialogService.showErrorEliminacion('empleado', nombreCompleto, 'ocurrió un error inesperado').subscribe();
+            }
           }
         });
       }
