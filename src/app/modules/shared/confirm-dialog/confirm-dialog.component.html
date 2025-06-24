@@ -1,0 +1,27 @@
+<div class="confirm-dialog" [ngClass]="getTypeClass()">
+  <div class="confirm-dialog__header">
+    <div class="confirm-dialog__icon">
+      <i [class]="getIconClass()"></i>
+    </div>
+    <h2 class="confirm-dialog__title">{{ data.title }}</h2>
+  </div>
+  
+  <div class="confirm-dialog__content">
+    <p class="confirm-dialog__message">{{ data.message }}</p>
+  </div>
+  
+  <div class="confirm-dialog__actions">
+    <button 
+      mat-stroked-button 
+      class="confirm-dialog__btn confirm-dialog__btn--cancel"
+      (click)="onCancel()">
+      {{ data.cancelText }}
+    </button>
+    <button 
+      mat-flat-button 
+      class="confirm-dialog__btn confirm-dialog__btn--confirm"
+      (click)="onConfirm()">
+      {{ data.confirmText }}
+    </button>
+  </div>
+</div> 

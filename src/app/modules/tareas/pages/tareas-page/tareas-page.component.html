@@ -1,51 +1,72 @@
 <div class="welcome-container">
-  <app-sidebar></app-sidebar>
-  <app-topbar></app-topbar>
-
-  <div class="tareas-content">
-      <h1 class="titulo">TAREAS</h1>
-      <app-search-bar (addClick)="onAddTarea()"></app-search-bar>
-<dx-gantt [taskListWidth]="500" scaleType="weeks" height="700"
-  (onTaskInserting)="onTaskInserting($event)"
-  (onTaskUpdating)="onTaskUpdating($event)"
-  (onTaskDeleting)="onTaskDeleting($event)"
-  (onTaskClick)="onTaskClick($event)">
-    <dxo-tasks [dataSource]="tasks"></dxo-tasks>
-    <dxo-dependencies [dataSource]="dependencies"></dxo-dependencies>
-    <dxo-resources [dataSource]="resources"></dxo-resources>
-    <dxo-resource-assignments
-      [dataSource]="resourceAssignments"
-    ></dxo-resource-assignments>
-  
-    <dxi-column dataField="title" caption="Subject" [width]="300"></dxi-column>
-    <dxi-column
-      dataField="start"
-      caption="Start Date"
-      dataType="date"
-    ></dxi-column>
-    <dxi-column dataField="end" caption="End Date" dataType="date"></dxi-column>
-  
-    <dxo-toolbar>
-      <dxi-item name="undo"></dxi-item>
-      <dxi-item name="redo"></dxi-item>
-      <dxi-item name="separator"></dxi-item>
-      <dxi-item name="collapseAll"></dxi-item>
-      <dxi-item name="expandAll"></dxi-item>
-      <dxi-item name="separator"></dxi-item>
-      <dxi-item name="addTask"></dxi-item>
-      <dxi-item name="deleteTask"></dxi-item>
-      <dxi-item name="separator"></dxi-item>
-      <dxi-item name="zoomIn"></dxi-item>
-      <dxi-item name="zoomOut"></dxi-item>
-    </dxo-toolbar>
-  
-    <dxo-validation [autoUpdateParentTasks]="true"></dxo-validation>
-    <dxo-editing [enabled]="false"></dxo-editing>
-  </dx-gantt>
-      <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx.material.blue.light.css" />
-      <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx-gantt.css" />   
-
-  
+  <div class="sidebar-area">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="topbar-area">
+    <app-topbar></app-topbar>
   </div>
 
-  <app-footer></app-footer>
+  <div class="tareas-content">
+    <h1 class="titulo">TAREAS</h1>
+    <app-search-bar 
+      placeholder="Buscar por nombre, recurso, estado..."
+      addButtonText="Nueva Tarea"
+      (searchChange)="onSearchChange($event)"
+      (addClick)="onAddTarea()"
+      (clearSearch)="onClearSearch()">
+    </app-search-bar>
+
+    <!-- Mostrar tabla cuando hay búsqueda -->
+    <div *ngIf="searchText && searchText.trim() !== ''" class="tabla-container">
+      <app-tareas-table [tareas]="tareasFiltradas"></app-tareas-table>
+    </div>
+
+    <!-- Mostrar Gantt cuando no hay búsqueda -->
+    <div *ngIf="!searchText || searchText.trim() === ''" class="gantt-container">
+      <dx-gantt [taskListWidth]="500" scaleType="weeks" height="700"
+        (onTaskInserting)="onTaskInserting($event)"
+        (onTaskUpdating)="onTaskUpdating($event)"
+        (onTaskDeleting)="onTaskDeleting($event)"
+        (onTaskClick)="onTaskClick($event)">
+        <dxo-tasks [dataSource]="tasks"></dxo-tasks>
+        <dxo-dependencies [dataSource]="dependencies"></dxo-dependencies>
+        <dxo-resources [dataSource]="resources"></dxo-resources>
+        <dxo-resource-assignments
+          [dataSource]="resourceAssignments"
+        ></dxo-resource-assignments>
+      
+        <dxi-column dataField="title" caption="Subject" [width]="300"></dxi-column>
+        <dxi-column
+          dataField="start"
+          caption="Start Date"
+          dataType="date"
+        ></dxi-column>
+        <dxi-column dataField="end" caption="End Date" dataType="date"></dxi-column>
+      
+        <dxo-toolbar>
+          <dxi-item name="undo"></dxi-item>
+          <dxi-item name="redo"></dxi-item>
+          <dxi-item name="separator"></dxi-item>
+          <dxi-item name="collapseAll"></dxi-item>
+          <dxi-item name="expandAll"></dxi-item>
+          <dxi-item name="separator"></dxi-item>
+          <dxi-item name="addTask"></dxi-item>
+          <dxi-item name="deleteTask"></dxi-item>
+          <dxi-item name="separator"></dxi-item>
+          <dxi-item name="zoomIn"></dxi-item>
+          <dxi-item name="zoomOut"></dxi-item>
+        </dxo-toolbar>
+      
+        <dxo-validation [autoUpdateParentTasks]="true"></dxo-validation>
+        <dxo-editing [enabled]="false"></dxo-editing>
+      </dx-gantt>
+    </div>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx.material.blue.light.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/24.2.7/css/dx-gantt.css" />   
+  </div>
+
+  <div class="footer-area">
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -106,4 +106,66 @@ a {
   width: 100%;
 }
 
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; /* Ocultar sidebar en móviles */
+  }
+  
+  /* Alternativa: sidebar compacto */
+  .sidebar--mobile {
+    display: flex;
+    width: 60px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+  
+  .sidebar--mobile:hover {
+    width: 60px; /* No expandir en móviles */
+  }
+  
+  .sidebar--mobile .sidebar__hide {
+    display: none; /* Siempre oculto en móviles */
+  }
+  
+  .sidebar--mobile .sidebar__element {
+    justify-content: center;
+    padding: 8px;
+  }
+  
+  .sidebar--mobile .sidebar__icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .sidebar--mobile .sidebar__icon--logo {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar--mobile {
+    width: 50px;
+  }
+  
+  .sidebar--mobile .sidebar__element {
+    padding: 6px;
+  }
+  
+  .sidebar--mobile .sidebar__icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .sidebar--mobile .sidebar__icon--logo {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 

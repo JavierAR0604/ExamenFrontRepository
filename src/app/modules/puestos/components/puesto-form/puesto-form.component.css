@@ -34,3 +34,22 @@
     padding-bottom: 1rem;
 
   }
+
+  .button-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem 2rem 2rem 2rem;
+  }
+
+  .btn-guardar {
+    background-color: #94c73e !important;
+    color: #fff !important;
+    border-radius: 12px;
+  }
+
+  .btn-guardar:hover {
+    background-color: #7ba332 !important;
+  }
+

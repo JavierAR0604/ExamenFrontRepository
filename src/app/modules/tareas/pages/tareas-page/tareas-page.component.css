@@ -10,11 +10,23 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+.sidebar-area {
+  grid-area: sidebar;
+}
+
+.topbar-area {
+  grid-area: top-bar;
+}
+
 .tareas-content {
   grid-area: tareas-content;
   background: white;
   padding: 2rem;
   overflow: auto;
+}
+
+.footer-area {
+  grid-area: footer;
 }
 
 .titulo {
@@ -24,6 +36,95 @@
   font-size: 2rem;
 }
 
+.tabla-container {
+  margin-top: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gantt-container {
+  margin-top: 1rem;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
 #gantt {
   height: 700px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .tareas-content {
+    padding: 1.5rem;
+  }
+  
+  .titulo {
+    font-size: 1.8rem;
+  }
+  
+  .gantt-container {
+    padding: 0.75rem;
+  }
+  
+  #gantt {
+    height: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-container {
+    grid-template-areas:
+      "top-bar"
+      "tareas-content"
+      "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px 1fr 30px;
+  }
+  
+  .sidebar-area {
+    display: none;
+  }
+  
+  .tareas-content {
+    padding: 1rem;
+  }
+  
+  .titulo {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  
+  .gantt-container {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  #gantt {
+    height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tareas-content {
+    padding: 0.5rem;
+  }
+  
+  .titulo {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .gantt-container {
+    padding: 0.25rem;
+    border-radius: 4px;
+  }
+  
+  #gantt {
+    height: 400px;
+  }
 }

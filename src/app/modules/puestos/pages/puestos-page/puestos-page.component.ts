@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PuestoFormComponent } from '../../components/puesto-form/puesto-form.component';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-puestos-page',
@@ -44,7 +45,11 @@ export class PuestosPageComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private puestosService: PuestosService, private dialog: MatDialog) {}
+  constructor(
+    private puestosService: PuestosService, 
+    private dialog: MatDialog,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
   ngOnInit() {
     this.cargarPuestos();
@@ -120,16 +125,45 @@ export class PuestosPageComponent implements OnInit, AfterViewInit {
   }
 
   eliminarPuesto(puesto: Puesto) {
-    if(confirm('¿Está seguro de eliminar este puesto?')) {
-      this.puestosService.eliminarPuesto(puesto.idPuesto).subscribe({
-        next: () => {
-          this.cargarPuestos(); // Recargar la lista después de eliminar
-        },
-        error: (err) => {
-          console.error('Error al eliminar puesto', err);
-        }
-      });
-    }
+    this.confirmDialogService.confirmDeletePuesto(puesto.nombrePuesto).subscribe(confirmed => {
+      if (confirmed) {
+        this.puestosService.eliminarPuesto(puesto.idPuesto).subscribe({
+          next: () => {
+            this.cargarPuestos(); // Recargar la lista después de eliminar
+          },
+          error: (err) => {
+            // Manejar error específico de eliminación
+            if (err.status === 400) {
+              let errorMessage = '';
+              
+              // Intentar extraer el mensaje de error
+              if (typeof err.error === 'string') {
+                errorMessage = err.error;
+              } else if (err.error && typeof err.error === 'object') {
+                errorMessage = err.error.message || err.error.error || JSON.stringify(err.error);
+              } else {
+                errorMessage = 'No se puede eliminar el puesto';
+              }
+              
+              if (errorMessage.includes('empleado(s) vinculado(s)')) {
+                // Extraer el número de empleados del mensaje
+                const match = errorMessage.match(/(\d+)\s+empleado\(s\)/);
+                const empleadosCount = match ? parseInt(match[1]) : 0;
+                
+                this.confirmDialogService.showErrorPuestoConEmpleados(puesto.nombrePuesto, empleadosCount).subscribe();
+              } else {
+                // Otro tipo de error 400
+                this.confirmDialogService.showErrorEliminacion('puesto', puesto.nombrePuesto, errorMessage).subscribe();
+              }
+            } else {
+              // Error genérico
+              console.error('Error al eliminar puesto', err);
+              this.confirmDialogService.showErrorEliminacion('puesto', puesto.nombrePuesto, 'ocurrió un error inesperado').subscribe();
+            }
+          }
+        });
+      }
+    });
   }
 
   verPuesto(puesto: Puesto) {

@@ -8,6 +8,9 @@ import { EmpleadosService } from '../../../empleados/services/empleados.service'
 import { SearchBarComponent } from '../../../shared/search-bar/search-bar.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TareaFormModalComponent } from '../../components/tarea-form-modal/tarea-form-modal.component';
+import { TareasTableComponent, Tarea } from '../../components/tareas-table/tareas-table.component';
+import { CommonModule } from '@angular/common';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 // Interfaces para el Gantt
 export interface Task {
@@ -37,7 +40,15 @@ export interface ResourceAssignment {
 
 @Component({
   selector: 'demo-app',
-  imports: [DxGanttModule, SidebarComponent, TopbarComponent, FooterComponent, SearchBarComponent],
+  imports: [
+    DxGanttModule, 
+    SidebarComponent, 
+    TopbarComponent, 
+    FooterComponent, 
+    SearchBarComponent,
+    TareasTableComponent,
+    CommonModule
+  ],
   templateUrl: './tareas-page.component.html',
   styleUrls: ['./tareas-page.component.css']
 })
@@ -46,11 +57,17 @@ export class TareasPageComponent implements OnInit {
   dependencies: Dependency[] = [];
   resources: Resource[] = [];
   resourceAssignments: ResourceAssignment[] = [];
+  
+  // Variables para búsqueda y tabla
+  searchText: string = '';
+  tareasFiltradas: Tarea[] = [];
+  tareasCompletas: TareaDTO[] = [];
 
   constructor(
     private tareasService: TareasService,
     private empleadosService: EmpleadosService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +78,9 @@ export class TareasPageComponent implements OnInit {
   cargarTareas() {
     this.tareasService.getTareas().subscribe({
       next: (tareas: TareaDTO[]) => {
+        this.tareasCompletas = tareas;
+        
+        // Mapear para Gantt
         this.tasks = tareas.map(t => ({
           id: t.idTarea,
           parentId: t.idPadre ?? 0,
@@ -70,6 +90,36 @@ export class TareasPageComponent implements OnInit {
           progress: t.progreso ?? 0,
           resourceId: t.idRecurso
         }));
+        
+        // Mapear para tabla
+        this.tareasFiltradas = tareas.map(t => {
+          const tareaPadre = t.idPadre ? tareas.find(ta => ta.idTarea === t.idPadre) : null;
+          const predecesoraObj = t.predecesora ? tareas.find(ta => ta.idTarea === t.predecesora) : null;
+          
+          return {
+            id: t.idTarea,
+            nombreTarea: t.nombreTarea,
+            fechaInicio: t.fechaInicio ? new Date(t.fechaInicio) : new Date(),
+            fechaFin: t.fechaFin ? new Date(t.fechaFin) : new Date(),
+            progreso: t.progreso ?? 0,
+            idRecurso: t.idRecurso,
+            idPadre: t.idPadre,
+            predecesora: t.predecesora,
+            recurso: t.idRecurso && this.resources.find(r => r.id === t.idRecurso) ? {
+              id: t.idRecurso,
+              nombre: this.resources.find(r => r.id === t.idRecurso)?.text || ''
+            } : undefined,
+            tareaPadre: tareaPadre ? {
+              id: tareaPadre.idTarea,
+              nombreTarea: tareaPadre.nombreTarea
+            } : undefined,
+            predecesoraObj: predecesoraObj ? {
+              id: predecesoraObj.idTarea,
+              nombreTarea: predecesoraObj.nombreTarea
+            } : undefined
+          };
+        });
+        
         this.dependencies = tareas
           .filter(t => typeof t.predecesora === 'number' && t.predecesora !== null)
           .map((t, idx) => ({
@@ -104,6 +154,127 @@ export class TareasPageComponent implements OnInit {
         console.error('Error al obtener recursos', err);
       }
     });
+  }
+
+  // Métodos para búsqueda
+  onSearchChange(searchText: string) {
+    this.searchText = searchText;
+    this.filtrarTareas();
+  }
+
+  onClearSearch() {
+    this.searchText = '';
+    this.tareasFiltradas = this.tareasCompletas.map(t => {
+      const tareaPadre = t.idPadre ? this.tareasCompletas.find(ta => ta.idTarea === t.idPadre) : null;
+      const predecesoraObj = t.predecesora ? this.tareasCompletas.find(ta => ta.idTarea === t.predecesora) : null;
+      
+      return {
+        id: t.idTarea,
+        nombreTarea: t.nombreTarea,
+        fechaInicio: t.fechaInicio ? new Date(t.fechaInicio) : new Date(),
+        fechaFin: t.fechaFin ? new Date(t.fechaFin) : new Date(),
+        progreso: t.progreso ?? 0,
+        idRecurso: t.idRecurso,
+        idPadre: t.idPadre,
+        predecesora: t.predecesora,
+        recurso: t.idRecurso && this.resources.find(r => r.id === t.idRecurso) ? {
+          id: t.idRecurso,
+          nombre: this.resources.find(r => r.id === t.idRecurso)?.text || ''
+        } : undefined,
+        tareaPadre: tareaPadre ? {
+          id: tareaPadre.idTarea,
+          nombreTarea: tareaPadre.nombreTarea
+        } : undefined,
+        predecesoraObj: predecesoraObj ? {
+          id: predecesoraObj.idTarea,
+          nombreTarea: predecesoraObj.nombreTarea
+        } : undefined
+      };
+    });
+  }
+
+  filtrarTareas() {
+    if (!this.searchText || this.searchText.trim() === '') {
+      this.onClearSearch();
+      return;
+    }
+
+    const searchTerm = this.searchText.toLowerCase().trim();
+    
+    this.tareasFiltradas = this.tareasCompletas
+      .filter(tarea => {
+        // Búsqueda por nombre de tarea
+        if (tarea.nombreTarea.toLowerCase().includes(searchTerm)) {
+          return true;
+        }
+        
+        // Búsqueda por ID
+        if (tarea.idTarea.toString().includes(searchTerm)) {
+          return true;
+        }
+        
+        // Búsqueda por recurso
+        const recurso = this.resources.find(r => r.id === tarea.idRecurso);
+        if (recurso && recurso.text.toLowerCase().includes(searchTerm)) {
+          return true;
+        }
+        
+        // Búsqueda por estado
+        const estado = this.getEstadoText(tarea.progreso ?? 0);
+        if (estado.toLowerCase().includes(searchTerm)) {
+          return true;
+        }
+        
+        // Búsqueda por fechas
+        if (tarea.fechaInicio) {
+          const fechaInicio = new Date(tarea.fechaInicio).toLocaleDateString('es-ES');
+          if (fechaInicio.includes(searchTerm)) {
+            return true;
+          }
+        }
+        
+        if (tarea.fechaFin) {
+          const fechaFin = new Date(tarea.fechaFin).toLocaleDateString('es-ES');
+          if (fechaFin.includes(searchTerm)) {
+            return true;
+          }
+        }
+        
+        return false;
+      })
+      .map(t => {
+        const tareaPadre = t.idPadre ? this.tareasCompletas.find(ta => ta.idTarea === t.idPadre) : null;
+        const predecesoraObj = t.predecesora ? this.tareasCompletas.find(ta => ta.idTarea === t.predecesora) : null;
+        
+        return {
+          id: t.idTarea,
+          nombreTarea: t.nombreTarea,
+          fechaInicio: t.fechaInicio ? new Date(t.fechaInicio) : new Date(),
+          fechaFin: t.fechaFin ? new Date(t.fechaFin) : new Date(),
+          progreso: t.progreso ?? 0,
+          idRecurso: t.idRecurso,
+          idPadre: t.idPadre,
+          predecesora: t.predecesora,
+          recurso: t.idRecurso && this.resources.find(r => r.id === t.idRecurso) ? {
+            id: t.idRecurso,
+            nombre: this.resources.find(r => r.id === t.idRecurso)?.text || ''
+          } : undefined,
+          tareaPadre: tareaPadre ? {
+            id: tareaPadre.idTarea,
+            nombreTarea: tareaPadre.nombreTarea
+          } : undefined,
+          predecesoraObj: predecesoraObj ? {
+            id: predecesoraObj.idTarea,
+            nombreTarea: predecesoraObj.nombreTarea
+          } : undefined
+        };
+      });
+  }
+
+  getEstadoText(progreso: number): string {
+    if (progreso === 0) return 'Asignado';
+    if (progreso < 100) return 'En progreso';
+    return 'Completada';
   }
 
   // Abrir modal para nueva tarea
@@ -150,12 +321,21 @@ export class TareasPageComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result?.eliminar) {
-        if (window.confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
-          this.tareasService.eliminarTarea(taskId).subscribe({
-            next: () => this.cargarTareas(),
-            error: err => console.error('Error al eliminar tarea:', err)
-          });
-        }
+        this.tareasService.eliminarTarea(taskId).subscribe({
+          next: () => this.cargarTareas(),
+          error: (err) => {
+            // Manejar error específico de eliminación
+            if (err.status === 500) {
+              const tarea = this.tasks.find(t => t.id === taskId);
+              const nombreTarea = tarea?.title || 'esta tarea';
+              this.confirmDialogService.showErrorEliminacion(
+                'tarea', 
+                nombreTarea, 
+                'es predecesora de otra tarea o tiene dependencias asociadas'
+              ).subscribe();
+            }
+          }
+        });
         return;
       }
       if (result) {
@@ -188,12 +368,22 @@ export class TareasPageComponent implements OnInit {
     this.onTaskClick(e);
   }
   onTaskDeleting(e: any) {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
-      this.tareasService.eliminarTarea(e.key).subscribe({
-        next: () => this.cargarTareas(),
-        error: () => { e.cancel = true; }
-      });
-    }
+    this.tareasService.eliminarTarea(e.key).subscribe({
+      next: () => this.cargarTareas(),
+      error: (err) => {
+        e.cancel = true;
+        // Manejar error específico de eliminación
+        if (err.status === 500) {
+          const tarea = this.tasks.find(t => t.id === e.key);
+          const nombreTarea = tarea?.title || 'esta tarea';
+          this.confirmDialogService.showErrorEliminacion(
+            'tarea', 
+            nombreTarea, 
+            'es predecesora de otra tarea o tiene dependencias asociadas'
+          ).subscribe();
+        }
+      }
+    });
     e.cancel = true;
   }
 }

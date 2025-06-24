@@ -34,7 +34,7 @@ export class LoginPageComponent implements OnInit {
       const credentials: LoginDTO = this.loginForm.value;
       this.authService.login(credentials).subscribe({
         next: (response) => {
-          localStorage.setItem('token', response.token);
+          this.authService.setToken(response.token, response);
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {

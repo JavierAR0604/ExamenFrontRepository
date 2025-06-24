@@ -1,0 +1,118 @@
+.tabla-tareas {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-mat {
+  width: 100%;
+}
+
+.mat-mdc-row:hover {
+  background-color: #f5f5f5;
+}
+
+.progreso-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.progreso-texto {
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 35px;
+}
+
+.progreso-barra {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.estado-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.estado-asignado {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.estado-progreso {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.estado-completada {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .progreso-container {
+    min-width: 100px;
+  }
+  
+  .progreso-texto {
+    font-size: 11px;
+    min-width: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabla-tareas {
+    overflow-x: auto;
+  }
+  
+  .tabla-mat {
+    min-width: 900px;
+  }
+  
+  .progreso-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 80px;
+  }
+  
+  .progreso-barra {
+    width: 100%;
+  }
+  
+  .estado-badge {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabla-mat {
+    min-width: 800px;
+  }
+  
+  .progreso-container {
+    min-width: 70px;
+  }
+  
+  .progreso-texto {
+    font-size: 10px;
+    min-width: 25px;
+  }
+  
+  .estado-badge {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+}

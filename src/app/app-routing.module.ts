@@ -5,6 +5,8 @@ import { MainPageComponent } from './modules/main/pages/main-page/main-page.comp
 import { EmpleadosPageComponent } from './modules/empleados/pages/empleados-page/empleados-page.component';
 import { PuestosPageComponent } from './modules/puestos/pages/puestos-page/puestos-page.component';
 import { TareasPageComponent } from './modules/tareas/pages/tareas-page/tareas-page.component';
+import { AuthGuard } from './guards/auth.guard';
+import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
   {
@@ -15,24 +17,28 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginPageComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: 'dashboard',
     component: MainPageComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'empleados',
     component: EmpleadosPageComponent,
+    canActivate: [AuthGuard]
   },
-    {
+  {
     path: 'puestos',
     component: PuestosPageComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'tareas',
     component: TareasPageComponent,
+    canActivate: [AuthGuard]
   }
-  
 ];
 
 @NgModule({

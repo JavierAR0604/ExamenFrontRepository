@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { SearchBarComponent } from "../../../shared/search-bar/search-bar.component";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EmpleadoFormComponent } from '../../components/empleado-form/empleado-form.component';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-empleados-page',
@@ -44,7 +45,11 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private empleadosService: EmpleadosService, private dialog: MatDialog) {}
+  constructor(
+    private empleadosService: EmpleadosService, 
+    private dialog: MatDialog,
+    private confirmDialogService: ConfirmDialogService
+  ) {}
 
   ngOnInit() {
     this.cargarEmpleados();
@@ -154,16 +159,19 @@ export class EmpleadosPageComponent implements OnInit, AfterViewInit {
   }
 
   eliminarEmpleado(empleado: Empleado) {
-    if(confirm('¿Está seguro de eliminar este empleado?')) {
-      this.empleadosService.eliminarEmpleado(empleado.idEmpleado).subscribe({
-        next: () => {
-          this.cargarEmpleados(); // Recargar la lista después de eliminar
-        },
-        error: (err) => {
-          console.error('Error al eliminar empleado', err);
-        }
-      });
-    }
+    const nombreCompleto = `${empleado.nombre} ${empleado.apellidoPaterno}`;
+    this.confirmDialogService.confirmDeleteEmpleado(nombreCompleto).subscribe(confirmed => {
+      if (confirmed) {
+        this.empleadosService.eliminarEmpleado(empleado.idEmpleado).subscribe({
+          next: () => {
+            this.cargarEmpleados(); // Recargar la lista después de eliminar
+          },
+          error: (err) => {
+            console.error('Error al eliminar empleado', err);
+          }
+        });
+      }
+    });
   }
 
   verEmpleado(empleado: Empleado) {

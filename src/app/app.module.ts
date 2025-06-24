@@ -19,8 +19,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 @NgModule({
   declarations: [
     AppComponent,
-    LoginPageComponent,
-
+    LoginPageComponent
   ],
   imports: [
     BrowserModule,

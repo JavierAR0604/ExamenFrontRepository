@@ -1,12 +1,16 @@
 <div class="welcome-container">
-  <app-sidebar></app-sidebar>
-  <app-topbar></app-topbar>
+  <div class="sidebar-area">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="topbar-area">
+    <app-topbar></app-topbar>
+  </div>
 
   <div class="empleados-content">
     <div class="tabla-empleados">
       <h1 class="titulo">PUESTOS</h1>
       <app-search-bar 
-        placeholder="Buscar por ID o nombre del puesto..."
+        placeholder="Buscar por ID, nombre..."
         addButtonText="Nuevo Puesto"
         (searchChange)="onSearchChange($event)"
         (addClick)="onAddClick()"
@@ -14,41 +18,52 @@
       </app-search-bar>
 
       <div class="tabla-contenedor-reducido">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 tabla-mat">
 
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z2 tabla-mat">
+          <ng-container matColumnDef="idPuesto">
+            <th mat-header-cell *matHeaderCellDef class="align-center">Id</th>
+            <td mat-cell *matCellDef="let puesto" class="align-center">{{ puesto.idPuesto }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="idPuesto">
-          <th mat-header-cell *matHeaderCellDef class="align-left">Id</th>
-          <td mat-cell *matCellDef="let puesto" class="align-left">{{ puesto.idPuesto }}</td>
-        </ng-container>
+          <ng-container matColumnDef="nombrePuesto">
+            <th mat-header-cell *matHeaderCellDef class="align-left">Nombre del Puesto</th>
+            <td mat-cell *matCellDef="let puesto" class="align-left">{{ puesto.nombrePuesto }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="nombrePuesto">
-          <th mat-header-cell *matHeaderCellDef class="align-center">Puesto</th>
-          <td mat-cell *matCellDef="let puesto" class="align-center">{{ puesto.nombrePuesto }}</td>
-        </ng-container>
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef class="align-left">Descripción</th>
+            <td mat-cell *matCellDef="let puesto" class="align-left">{{ puesto.descripcion }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="acciones">
-          <th mat-header-cell *matHeaderCellDef class="align-right">Acciones</th>
-          <td mat-cell *matCellDef="let puesto" class="align-right">
-            <button class="icono editar" (click)="editarPuesto(puesto)" matTooltip="Editar">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button class="icono eliminar" (click)="eliminarPuesto(puesto)" matTooltip="Eliminar">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="salario">
+            <th mat-header-cell *matHeaderCellDef class="align-right">Salario</th>
+            <td mat-cell *matCellDef="let puesto" class="align-right">{{ puesto.salario | currency:'USD':'symbol':'1.2-2' }}</td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef class="align-center">Acciones</th>
+            <td mat-cell *matCellDef="let puesto" class="align-center">
 
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              <button class="icono editar" (click)="editarPuesto(puesto)" matTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="icono eliminar" (click)="eliminarPuesto(puesto)" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
     </div>
   </div>
 
-</div>
-
-  <app-footer></app-footer>
+  <div class="footer-area">
+    <app-footer></app-footer>
+  </div>
 </div>
 

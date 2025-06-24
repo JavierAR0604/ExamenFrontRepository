@@ -8,9 +8,9 @@
     <input matInput formControlName="nombrePuesto" required>
   </mat-form-field>
 
-  <div mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="cancelar()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="puestoForm.invalid">
+  <div class="button-row">
+    <button mat-stroked-button type="button" color="warn" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button class="btn-guardar" type="submit" [disabled]="puestoForm.invalid">
       {{ isEdit ? 'Actualizar' : 'Guardar' }}
     </button>
   </div>

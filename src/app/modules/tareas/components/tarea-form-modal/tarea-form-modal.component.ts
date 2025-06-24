@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'app-tarea-form-modal',
@@ -35,21 +36,28 @@ export class TareaFormModalComponent {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<TareaFormModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private confirmDialogService: ConfirmDialogService
   ) {
     this.tareaForm = this.fb.group({
       nombreTarea: [data?.title || data?.nombreTarea || '', Validators.required],
       fechaInicio: [data?.start ? new Date(data.start) : data?.fechaInicio ? new Date(data.fechaInicio) : '', Validators.required],
       fechaFin: [data?.end ? new Date(data.end) : data?.fechaFin ? new Date(data.fechaFin) : '', Validators.required],
       idRecurso: [data?.resourceId ?? data?.idRecurso ?? null, Validators.required],
-      progreso: [data?.progress ?? data?.progreso ?? 0],
+      progreso: [data?.progress ?? data?.progreso ?? 0, [Validators.min(0), Validators.max(100)]],
       predecesora: [data?.predecesora ?? null],
       estado: [data?.estado ?? ''],
       idPadre: [data?.parentId ?? data?.idPadre ?? null]
     });
-    // Calcular el estado visual
+    
+    // Calcular el estado visual inicial
     const progreso = this.tareaForm.get('progreso')?.value ?? 0;
     this.estadoVisual = data?.estado || this.getEstadoFromProgreso(progreso);
+    
+    // Escuchar cambios en el progreso para actualizar el estado
+    this.tareaForm.get('progreso')?.valueChanges.subscribe(valor => {
+      this.estadoVisual = this.getEstadoFromProgreso(valor);
+    });
   }
 
   getEstadoFromProgreso(progreso: number): string {
@@ -57,6 +65,30 @@ export class TareaFormModalComponent {
     if (progreso > 0 && progreso < 100) return 'En progreso';
     if (progreso === 100) return 'Completada';
     return '';
+  }
+
+  onProgresoChange(): void {
+    const progresoControl = this.tareaForm.get('progreso');
+    if (progresoControl) {
+      let valor = progresoControl.value;
+      
+      // Convertir a número si es string
+      if (typeof valor === 'string') {
+        valor = parseFloat(valor) || 0;
+      }
+      
+      // Limitar el valor entre 0 y 100
+      if (valor < 0) {
+        valor = 0;
+        progresoControl.setValue(0, { emitEvent: false });
+      } else if (valor > 100) {
+        valor = 100;
+        progresoControl.setValue(100, { emitEvent: false });
+      }
+      
+      // Actualizar el estado visual
+      this.estadoVisual = this.getEstadoFromProgreso(valor);
+    }
   }
 
   guardar() {
@@ -70,8 +102,11 @@ export class TareaFormModalComponent {
   }
 
   eliminar() {
-    if (window.confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
-      this.dialogRef.close({ eliminar: true });
-    }
+    const nombreTarea = this.tareaForm.get('nombreTarea')?.value || 'esta tarea';
+    this.confirmDialogService.confirmDeleteTarea(nombreTarea).subscribe(confirmed => {
+      if (confirmed) {
+        this.dialogRef.close({ eliminar: true });
+      }
+    });
   }
 } 

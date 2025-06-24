@@ -65,7 +65,7 @@
   
       <!-- Botones -->
       <div class="button-row">
-        <button mat-stroked-button type="button" color="warn" (click)="cancelar()">Cancelar</button>
+        <button mat-stroked-button type="button" color="warn" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
         <button mat-flat-button class="btn-guardar" type="submit" [disabled]="empleadoForm.invalid">
           {{ isEdit ? 'Actualizar' : 'Guardar' }}
         </button>
